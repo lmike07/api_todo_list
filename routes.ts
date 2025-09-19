@@ -6,8 +6,8 @@ const router = Router();
 const taskController = new TaskController();
 
 
-//router.get('/task');
-//router.get('/task/:id_task');
+router.get('/task', taskController.get);
+router.get('/task/:id_task', taskController.getById);
 router.post('/task', taskController.add);
 //router.put('/task/:id_task');
 //router.delete('/task/:id_task');

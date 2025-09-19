@@ -9,9 +9,33 @@ class TaskController {
 
     }
 
+    get(req: Request, res: Response) {
+        const {status} = req.query;
+
+        if(status && (status === "in_progress" || status === "completed")) {
+
+            const result = taskService.get(status);
+            res.status(200).json(result);
+
+        }else {
+            res.status(401).json({error: "Invalid status parameter"});
+        }
+    }
+
+    getById(req: Request, res: Response) {
+        const {id_task} = req.params;
+
+        if(id_task) {
+
+            const result = taskService.getById(id_task);
+            res.status(200).json(result);
+
+        }else {
+            res.status(401).json({error: "Invalid id_task parameter"})
+        }
+    }
+
     add(req: Request, res: Response) {
-        console.log("BODY RECEBIDO:", req.body);
-        console.log("HEADERS:", req.headers["content-type"]);
 
         const {id, descricao, data, status} = req.body;
 
