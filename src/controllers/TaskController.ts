@@ -54,6 +54,30 @@ class TaskController {
 
     }
 
+    update(req: Request, res: Response) {
+        const {id, descricao, data, status} = req.body;
+        const {id_task} = req.params;
+
+        if(id && descricao && data && status && id_task) {
+
+           if (status === "completed" || status === "in_progress") {
+               const result = taskService.update(req.body, id_task);
+               if(Object.keys(result).length > 0) {
+                    res.json(result)
+               }else {
+                    res.status(404).json({error: "Task Not Found"});
+               }
+
+
+           }else {
+                res.status(401).json({error: "Invalid status Parameters"})
+           }
+
+        }else {
+            res.status(401).json({error: "Invalid Parameters"});
+        }
+    }
+
 }
 
 export default TaskController;

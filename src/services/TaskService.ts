@@ -35,8 +35,33 @@ class TaskService {
         return task;
     }
 
+    getIndexById (id_task: string): number{
+        const result = taskRepository.get();
+
+        let position: number = 99999;
+
+        result.map((obj, index) => {
+            if(obj.id === id_task) {
+                position = index
+            }
+        });
+        return position
+    }
+
     add(data: Task): Task {
         return taskRepository.add(data);
+    }
+
+    update(data: Task, id_task: string) {
+
+        const position = this.getIndexById(id_task);
+        
+        if(position !== 99999) {
+            return taskRepository.update(data, position);
+        }else {
+            return {};
+        }
+
     }
 }
 
