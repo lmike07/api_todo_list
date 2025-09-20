@@ -78,6 +78,18 @@ class TaskController {
         }
     }
 
-}
+    delete(req: Request, res: Response) {
+        const {id_task} = req.params;
+
+        if(id_task) {
+            const result = taskService.delete(id_task);
+
+            res.json(result);
+        }else {
+            res.status(401).json({error: "id_task is required in params"});
+            }
+        }
+    }
+
 
 export default TaskController;
