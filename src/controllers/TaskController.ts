@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import TaskService from "../services/TaskService";
+import { GetSchema, GetByIdSchema, AddSchema, UpadteSchema, UpadteSchemaParams, DeleteSchema } from "../schemas/TaskSchema";
+import {v4 as uuidv4} from 'uuid';
+
 
 const taskService = new TaskService();
 
@@ -9,87 +12,80 @@ class TaskController {
 
     }
 
-    get(req: Request, res: Response) {
-        const {status} = req.query;
+    async get(req: Request, res: Response) {
 
-        if(status && (status === "in_progress" || status === "completed")) {
+        try {
+            const status = req.query.status;
+            await GetSchema.validate(req.query);
 
-            const result = taskService.get(status);
+            const result = taskService.get(status as string);
             res.status(200).json(result);
-
-        }else {
-            res.status(401).json({error: "Invalid status parameter"});
+        } catch (error) {
+             res.status(401).json({error: "Invalid status parameter"});
         }
-    }
+        }
+    
 
-    getById(req: Request, res: Response) {
+    async getById(req: Request, res: Response) {
         const {id_task} = req.params;
 
-        if(id_task) {
-
+        
+        try {
+            await GetByIdSchema.validate(req.params)
             const result = taskService.getById(id_task);
             res.status(200).json(result);
+        } catch (error) {
+             res.status(401).json({error: error})
+        }
+        
+    }
 
-        }else {
-            res.status(401).json({error: "Invalid id_task parameter"})
+    async add(req: Request, res: Response) {
+
+        try {
+            await AddSchema.validate(req.body)
+ 
+            const id = uuidv4();
+            req.body.id = id
+
+            const result = taskService.add(req.body);
+            res.status(201).json(result);
+        } catch (error) {
+            res.status(401).json({error: "Invalid status: completed or in_progress"});
         }
     }
 
-    add(req: Request, res: Response) {
+    async update(req: Request, res: Response) {
 
-        const {id, descricao, data, status} = req.body;
+        try {
+            const {id_task} = req.params;
 
-        if (id || descricao && data && status) {
+            await UpadteSchema.validate(req.body);
+            await UpadteSchemaParams.validate(id_task);
 
-            if(status === "in_progress" || status === "completed") {
-                const result = taskService.add(req.body);
-                res.status(201).json(result);
+            const result = taskService.update(req.body, id_task);
+            if(Object.keys(result).length > 0) {
+                res.json(result)
             }else {
-                res.status(401).json({error: "Invalid status: completed or in_progress"});
+                res.status(404).json({error: "Task Not Found"});
             }
-
-        }else {
-                res.status(401).json({error: "Invalid parameters"});
-            }
-
-    }
-
-    update(req: Request, res: Response) {
-        const {id, descricao, data, status} = req.body;
-        const {id_task} = req.params;
-
-        if(id && descricao && data && status && id_task) {
-
-           if (status === "completed" || status === "in_progress") {
-               const result = taskService.update(req.body, id_task);
-               if(Object.keys(result).length > 0) {
-                    res.json(result)
-               }else {
-                    res.status(404).json({error: "Task Not Found"});
-               }
-
-
-           }else {
-                res.status(401).json({error: "Invalid status Parameters"})
-           }
-
-        }else {
-            res.status(401).json({error: "Invalid Parameters"});
+        } catch (error) {
+            res.status(404).json({error: error });
         }
     }
 
-    delete(req: Request, res: Response) {
-        const {id_task} = req.params;
+    async delete(req: Request, res: Response) {
 
-        if(id_task) {
+        try {
+            const {id_task} = req.params;
+
+            await DeleteSchema.validate(id_task);
             const result = taskService.delete(id_task);
-
             res.json(result);
-        }else {
+        } catch (error) {
             res.status(401).json({error: "id_task is required in params"});
-            }
         }
     }
 
-
+}
 export default TaskController;

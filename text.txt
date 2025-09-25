@@ -1,0 +1,9 @@
+try → testa o código
+catch → trata os erros, se ocorrerem
+finally → executa sempre (ex: fechar conexão com banco, liberar recurso, etc.)
+
+------------------------------------------------------------------------------------
+
+UUID significa Universally Unique Identifier (Identificador Único Universal).
+
+Ele é um código único usado para identificar informações de forma quase impossível de se repetir.

@@ -2,15 +2,22 @@
   "name": "TODOLIST-BACKEND",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.ts"
+  },
   "license": "MIT",
   "dependencies": {
+    "@types/uuid": "^11.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "uuid": "^13.0.0",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/yup": "^0.32.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }
